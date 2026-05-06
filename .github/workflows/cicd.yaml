@@ -1,0 +1,34 @@
+name: Context Explorer
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  explore-contexts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Dump GitHub Context
+        run: echo '${{ toJSON(github) }}' | jq .
+      
+      - name: Dump Runner Context
+        run: echo '${{ toJSON(runner) }}' | jq .
+      
+      - name: Dump Job Context
+        run: echo '${{ toJSON(job) }}' | jq .
+      
+      - name: Dump Environment Context
+        run: echo '${{ toJSON(env) }}' | jq .
+      
+      - name: Create a custom output
+        id: my_step
+        run: echo "message=Hello from step outputs!" >> $GITHUB_OUTPUT
+      
+      #- name: Read the custom output
+       # run: echo "The message was: ${{ steps.my_step.outputs.message }}"
