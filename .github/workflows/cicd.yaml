@@ -11,7 +11,7 @@ jobs:
       - id: set-version
         run: |
           version=$(date +%Y%m%d-%H%M%S)
-          service_name="my-app.${VERSION}.tar.gz"
+          service_name="my-app.$version.tar.gz"
           echo $service_name >> $GITHUB_OUTPUT
       
       - id: build
