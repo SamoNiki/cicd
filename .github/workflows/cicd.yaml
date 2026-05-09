@@ -1,34 +1,33 @@
-name: Context Explorer
-
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  workflow_dispatch:
-
+    branches:
+      - main
 jobs:
-  explore-contexts:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.set-version.outputs.version }}
+      artifact-name: ${{ steps.build.outputs.name }}
+    steps:
+      - id: set-version
+        run: |
+          VERSION=$(date +%Y%m%d-%H%M%S)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+      
+      - id: build
+        run: |
+          echo "name=my-app-${{ steps.set-version.outputs.version }}.tar.gz" >> $GITHUB_OUTPUT
+          tar -czf my-app.tar.gz src/
+      
+      - uses: actions/upload-artifact@v4
+        with:
+          name: my-app-${{ steps.set-version.outputs.version }}.tar.gz
+          path: my-app.tar.gz
+  
+  deploy:
+    needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Dump GitHub Context
-        run: echo '${{ toJSON(github) }}' | jq .
-      
-      - name: Dump Runner Context
-        run: echo '${{ toJSON(runner) }}' | jq .
-      
-      - name: Dump Job Context
-        run: echo '${{ toJSON(job) }}' | jq .
-      
-      - name: Dump Environment Context
-        run: echo '${{ toJSON(env) }}' | jq .
-      
-      - name: Create a custom output
-        id: my_step
-        run: echo "message=Hello from step outputs!" >> $GITHUB_OUTPUT
-      
-      #- name: Read the custom output
-       # run: echo "The message was: ${{ steps.my_step.outputs.message }}"
+      - run: |
+          echo "Deploying version: ${{ needs.build.outputs.version }}"
+          echo "Artifact: ${{ needs.build.outputs.artifact-name }}"
