@@ -6,13 +6,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     outputs: 
-      artifact_name: ${{ steps.set-version.outputs.service_name }}
+      artifact_name: ${{ steps.set-version.outputs.name }}
     steps:
       - id: set-version
         run: |
           version=$(date +%Y%m%d-%H%M%S)
           service_name="my-app-$version.tar.gz"
-          echo $service_name >> $GITHUB_OUTPUT
+          echo name=$service_name >> $GITHUB_OUTPUT
       
       - id: build
         run: |
