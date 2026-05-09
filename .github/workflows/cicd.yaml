@@ -27,6 +27,5 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          echo "Deploying version: ${{ needs.build.outputs.version }}"
+      - run: |          
           echo "Artifact: ${{ needs.build.outputs.artifact-name }}"
