@@ -6,21 +6,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
     outputs: 
-      artifact_name: ${{ steps.set-version.outputs.SERVICE_NAME }}
+      artifact_name: ${{ steps.set-version.outputs.service_name }}
     steps:
       - id: set-version
         run: |
-          VERSION=$(date +%Y%m%d-%H%M%S)
-          SERVICE_NAME="my-app.$VERSION.tar.gz"
-          echo $SERVICE_NAME >> $GITHUB_OUTPUT
+          version=$(date +%Y%m%d-%H%M%S)
+          service_name="my-app.${VERSION}.tar.gz"
+          echo $service_name >> $GITHUB_OUTPUT
       
       - id: build
         run: |
-          tar -czf $SERVICE_NAME src/app.py 
+          tar -czf $service_name src/app.py 
       
       - uses: actions/upload-artifact@v4
         with:
-          name: $SERVICE_NAME
+          name: $service_name
           path: .
   
   deploy:
